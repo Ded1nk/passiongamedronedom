@@ -1,0 +1,29 @@
+{
+  "name": "dronedom",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"partykit dev\"",
+    "dev:client": "vite",
+    "dev:server": "partykit dev",
+    "build": "vite build",
+    "deploy": "partykit deploy",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "partysocket": "^0.0.20",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.0",
+    "concurrently": "^9.0.0",
+    "partykit": "latest",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

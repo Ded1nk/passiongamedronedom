@@ -1,0 +1,836 @@
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
+
+# Yes, please provide the full revised JSON document now
+
+```json
+{
+  "project": {
+    "name": "Dronedom",
+    "tagline": "A drone photography startup deckbuilder",
+    "based_on": "Dominion (2nd Edition) by Donald X. Vaccarino, Rio Grande Games",
+    "remix_principle": "Mechanics-preserving remix. All rules text, costs, types, pile counts, turn structure, and outcome space are IDENTICAL to Dominion. Only the names, theme, flavor, and presentation change.",
+    "version": "0.2 canonical spec"
+  },
+  "metadata": {
+    "format_version": "1.0",
+    "intended_consumer": "AI code generator",
+    "source_of_truth": true,
+    "design_goal": "Provide a complete, implementation-friendly game spec for a Dominion rules engine reskinned as a drone photography startup game.",
+    "implementation_notes": [
+      "Keep original_name as the engine key.",
+      "Use display_name/new_name for UI.",
+      "Use rules_text verbatim as card behavior.",
+      "Use flavor only for narrative presentation.",
+      "Do not alter Dominion mechanics when implementing."
+    ]
+  },
+  "storyline": {
+    "premise": "You are the founder of a drone photography startup in a booming city full of weddings, real estate listings, construction projects, tourism campaigns, and brand launches. Every player begins as a scrappy one-person operation with a cheap drone, a few small local gigs, almost no reputation, and barely enough cash flow to stay airborne. The goal is to grow your business faster than the other startups and become the dominant aerial-media company before the market cools or the best contracts are claimed.",
+    "core_story": "Your company is not just selling photos — it is building a reputation, a workflow, and a delivery engine. Early turns represent scrappy hustle: taking small jobs, reinvesting the money, and slowly replacing chaos with systems. Later turns represent scaling: hiring talent, upgrading equipment, automating editing, winning premium clients, and turning your startup into a recognizable brand.",
+    "tone": "Fast, modern, competitive, slightly satirical. Think Silicon Valley meets a wedding-shoot Discord server.",
+    "victory_condition_in_story": "Mechanically, players still win by having the most victory points when the game ends. In the story, those points represent a mix of brand value, contract prestige, market share, and business maturity. The winner is the startup that scaled the fastest and built the strongest business before demand or opportunity ran out.",
+    "opening_flavor_text": "Drone work is booming. Every skyline, event, and property developer wants aerial footage, and the market is moving fast. You start with a single drone, a few local jobs, and a dream: to become the city's most trusted aerial media company before your rivals beat you to the best clients.",
+    "game_end_flavor": "The market cooled. The best contracts are spoken for. Investors are looking at the next sector. Whoever built the strongest brand and the most efficient operation wins."
+  },
+  "game_terms": {
+    "Dominion": "Dronedom",
+    "Deck": "Company / business pipeline",
+    "Hand": "This week's active workload",
+    "Discard pile": "Completed jobs / past work archive",
+    "Trash": "Out of business — assets retired, processes killed, jobs declined permanently",
+    "Supply": "The market — available assets, gear, talent, and contracts",
+    "Kingdom cards": "Market cards — what's available to invest in this game",
+    "Base cards": "Core economy cards (always in the game)",
+    "Turn (Action phase)": "Operations phase",
+    "Turn (Buy phase)": "Investment phase",
+    "Turn (Clean-up phase)": "End of week wrap-up",
+    "Action": "Operation — a business activity you run this week",
+    "Treasure": "Revenue — money coming into the business",
+    "Victory points": "Brand equity / market share",
+    "Curse": "Bad review / reputation hit",
+    "Attack": "Competitive market pressure",
+    "Reaction": "Risk management",
+    "Coin": "$ (or 'cash')",
+    "Buy": "Investment slot",
+    "Gain a card": "Acquire an asset/contract/hire",
+    "Trash a card": "Permanently retire (sell off, fire, automate away)",
+    "Reveal": "Disclose publicly (in a pitch, audit, etc.)",
+    "Set aside": "Park on the shelf",
+    "Shuffle": "Reset your weekly schedule"
+  },
+  "card_types": {
+    "treasure": {
+      "label": "Revenue",
+      "description": "Cards that generate cash in the Investment phase."
+    },
+    "victory": {
+      "label": "Brand",
+      "description": "Cards that score brand equity / market share."
+    },
+    "curse": {
+      "label": "Bad Review",
+      "description": "Negative scoring cards."
+    },
+    "action": {
+      "label": "Operation",
+      "description": "Cards played in the Operations phase."
+    },
+    "reaction": {
+      "label": "Risk Management",
+      "description": "Cards that respond to attacks or negative effects."
+    },
+    "attack": {
+      "label": "Competitive Pressure",
+      "description": "Cards that affect other players."
+    }
+  },
+  "ui_text": {
+    "game_title": "Dronedom",
+    "menu_start": "Start Startup",
+    "menu_resume": "Resume Week",
+    "menu_options": "Settings",
+    "phase_operations": "Operations",
+    "phase_investment": "Investment",
+    "phase_end_of_week": "End of Week",
+    "zone_hand": "Active Workload",
+    "zone_discard": "Archive",
+    "zone_trash": "Out of Business",
+    "zone_supply": "The Market",
+    "button_play": "Run Operation",
+    "button_buy": "Acquire",
+    "button_trash": "Retire",
+    "button_discard": "Archive",
+    "button_gain": "Acquire Asset",
+    "button_reveal": "Disclose",
+    "victory_label": "Brand Equity",
+    "coin_label": "Cash",
+    "buy_label": "Investment",
+    "action_label": "Operations"
+  },
+  "setup": {
+    "player_count_rules": {
+      "2": {
+        "victory_piles": 8,
+        "curse_piles": 10,
+        "province_piles": 8
+      },
+      "3": {
+        "victory_piles": 12,
+        "curse_piles": 20,
+        "province_piles": 12
+      },
+      "4": {
+        "victory_piles": 12,
+        "curse_piles": 30,
+        "province_piles": 12
+      },
+      "5": {
+        "victory_piles": 12,
+        "curse_piles": 40,
+        "province_piles": 15
+      },
+      "6": {
+        "victory_piles": 12,
+        "curse_piles": 50,
+        "province_piles": 18
+      }
+    },
+    "starting_deck": {
+      "composition": [
+        {
+          "card_id": "local_shoot",
+          "count": 7
+        },
+        {
+          "card_id": "brand_recognition",
+          "count": 3
+        }
+      ],
+      "shuffle": true,
+      "opening_hand_size": 5
+    },
+    "supply_piles": {
+      "always_present": [
+        "local_shoot",
+        "commercial_contract",
+        "corporate_retainer",
+        "brand_recognition",
+        "market_presence",
+        "industry_leader_status",
+        "bad_review"
+      ],
+      "kingdom_piles": 10
+    },
+    "first_player": {
+      "method": "random",
+      "tiebreaker": "If a previous game was just played, the winner goes last."
+    }
+  },
+  "turn_structure": {
+    "name": "OIE",
+    "display_name": "Operations, Investment, End of Week",
+    "equivalent_to": "Dominion's Action, Buy, Clean-up",
+    "phases": [
+      {
+        "id": "operations",
+        "display_name": "Operations phase",
+        "rules": "Play one Operation card from your hand. Follow its text top to bottom. Cards that grant +1 Action let you run additional Operations that turn."
+      },
+      {
+        "id": "investment",
+        "display_name": "Investment phase",
+        "rules": "Play any number of Revenue cards from your hand to generate cash. Then spend cash to acquire one card from the market. +1 Buy gives one additional investment slot."
+      },
+      {
+        "id": "end_of_week",
+        "display_name": "End of Week",
+        "rules": "Move all cards in play and all cards in hand to your archive. Draw a new hand of 5. Any unused cash, Operations, or Investment slots are lost. Pass to the left."
+      }
+    ],
+    "core_loop_summary": "Build engine in Operations, convert engine into money in Investment, then reset in End of Week."
+  },
+  "endgame": {
+    "end_conditions": [
+      {
+        "type": "pile_empty",
+        "pile_id": "industry_leader_status",
+        "description": "Game ends at the end of any turn when the Industry Leader Status pile is empty."
+      },
+      {
+        "type": "supply_empty_count",
+        "count_2_to_4": 3,
+        "count_5_to_6": 4,
+        "description": "Game ends at the end of any turn when the required number of Supply piles are empty."
+      }
+    ],
+    "scoring": {
+      "source_zones": [
+        "hand",
+        "deck",
+        "discard",
+        "in_play",
+        "set_aside"
+      ],
+      "score_name": "brand equity / VP",
+      "winner": "Most VP wins",
+      "tie_breaker": "The player with fewer turns taken wins."
+    }
+  },
+  "keyword_glossary": {
+    "+1 Card": "Draw one card from your deck.",
+    "+1 Action": "You may run one more Operation this turn.",
+    "+1 Buy": "You may make one more Investment this turn.",
+    "+$1": "You have an extra $1 to spend this turn.",
+    "Discard a card": "Move a card from your hand to your archive.",
+    "Gain a card": "Take a card from the market and put it into your archive by default.",
+    "Trash a card": "Permanently remove a card from the game by sending it to the Out of Business pile.",
+    "Reveal a card": "Show the card to all players, then return it unless told otherwise.",
+    "Look at a card": "You see it; other players do not. Return it unless told otherwise.",
+    "Set aside a card": "Put it outside the play area, face up by default. The card that set it aside will say when it comes back.",
+    "Play a card": "Move it into play and follow its instructions. Playing a card via another card's effect does not consume an Operations slot.",
+    "In play": "Cards currently in your play area. Cards in hand, deck, archive, set aside, or in the market are not in play."
+  },
+  "base_cards": [
+    {
+      "id": "local_shoot",
+      "original_name": "Copper",
+      "display_name": "Local Shoot",
+      "new_name": "Local Shoot",
+      "types": [
+        "Treasure"
+      ],
+      "type": [
+        "Treasure"
+      ],
+      "cost": 0,
+      "value": 1,
+      "vp": 0,
+      "rules_text": "Worth $1.",
+      "flavor": "A quick neighborhood gig — a small business listing, a backyard party, a real-estate flyover. Pays the bills.",
+      "pile_count": {
+        "all_players": 60,
+        "starting_in_hand_per_player": 7
+      }
+    },
+    {
+      "id": "commercial_contract",
+      "original_name": "Silver",
+      "display_name": "Commercial Contract",
+      "new_name": "Commercial Contract",
+      "types": [
+        "Treasure"
+      ],
+      "type": [
+        "Treasure"
+      ],
+      "cost": 3,
+      "value": 2,
+      "vp": 0,
+      "rules_text": "Worth $2.",
+      "flavor": "A reliable mid-tier client — a regional developer, a marketing agency, a midsize event company.",
+      "pile_count": 40
+    },
+    {
+      "id": "corporate_retainer",
+      "original_name": "Gold",
+      "display_name": "Corporate Retainer",
+      "new_name": "Corporate Retainer",
+      "types": [
+        "Treasure"
+      ],
+      "type": [
+        "Treasure"
+      ],
+      "cost": 6,
+      "value": 3,
+      "vp": 0,
+      "rules_text": "Worth $3.",
+      "flavor": "A premium recurring contract. Big brand, big budget, big margin.",
+      "pile_count": 30
+    },
+    {
+      "id": "brand_recognition",
+      "original_name": "Estate",
+      "display_name": "Brand Recognition",
+      "new_name": "Brand Recognition",
+      "types": [
+        "Victory"
+      ],
+      "type": [
+        "Victory"
+      ],
+      "cost": 2,
+      "value": 0,
+      "vp": 1,
+      "rules_text": "Worth 1 VP.",
+      "flavor": "Early brand equity — a logo, a Yelp page, a few good word-of-mouth referrals.",
+      "pile_count": {
+        "2": 8,
+        "3": 12,
+        "4": 12,
+        "5": 12,
+        "6": 12,
+        "starting_in_deck_per_player": 3
+      }
+    },
+    {
+      "id": "market_presence",
+      "original_name": "Duchy",
+      "display_name": "Market Presence",
+      "new_name": "Market Presence",
+      "types": [
+        "Victory"
+      ],
+      "type": [
+        "Victory"
+      ],
+      "cost": 5,
+      "value": 0,
+      "vp": 3,
+      "rules_text": "Worth 3 VP.",
+      "flavor": "Established regional recognition. People in the industry know your name.",
+      "pile_count": {
+        "2": 8,
+        "3": 12,
+        "4": 12,
+        "5": 12,
+        "6": 12
+      }
+    },
+    {
+      "id": "industry_leader_status",
+      "original_name": "Province",
+      "display_name": "Industry Leader Status",
+      "new_name": "Industry Leader Status",
+      "types": [
+        "Victory"
+      ],
+      "type": [
+        "Victory"
+      ],
+      "cost": 8,
+      "value": 0,
+      "vp": 6,
+      "rules_text": "Worth 6 VP.",
+      "flavor": "A flagship contract. Featured in trade press. Competitors quote you when pitching.",
+      "pile_count": {
+        "2": 8,
+        "3": 12,
+        "4": 12,
+        "5": 15,
+        "6": 18
+      }
+    },
+    {
+      "id": "bad_review",
+      "original_name": "Curse",
+      "display_name": "Bad Review",
+      "new_name": "Bad Review",
+      "types": [
+        "Curse"
+      ],
+      "type": [
+        "Curse"
+      ],
+      "cost": 0,
+      "value": 0,
+      "vp": -1,
+      "rules_text": "Worth -1 VP.",
+      "flavor": "A one-star review, a viral complaint thread, a botched delivery. It sticks.",
+      "pile_count": {
+        "2": 10,
+        "3": 20,
+        "4": 30,
+        "5": 40,
+        "6": 50
+      }
+    }
+  ],
+  "kingdom_cards": [
+    {
+      "id": "triage_inbox",
+      "original_name": "Cellar",
+      "display_name": "Triage Inbox",
+      "new_name": "Triage Inbox",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 2,
+      "rules_text": "+1 Action. Discard any number of cards. +1 Card per card discarded.",
+      "flavor": "Open the inbox. Drop the dead leads. See what actually deserves your attention this week."
+    },
+    {
+      "id": "outsource_automate",
+      "original_name": "Chapel",
+      "display_name": "Outsource & Automate",
+      "new_name": "Outsource & Automate",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 2,
+      "rules_text": "Trash up to 4 cards from your hand.",
+      "flavor": "Identify the workflow bloat and kill it — outsource it, automate it, or just stop doing it."
+    },
+    {
+      "id": "liability_insurance",
+      "original_name": "Moat",
+      "display_name": "Liability Insurance",
+      "new_name": "Liability Insurance",
+      "types": [
+        "Action",
+        "Reaction"
+      ],
+      "type": [
+        "Action",
+        "Reaction"
+      ],
+      "cost": 2,
+      "rules_text": "+2 Cards. When another player plays an Attack card, you may first reveal this from your hand, to be unaffected by it.",
+      "flavor": "Comprehensive coverage. When rivals come at you — lawsuits, price wars, smear campaigns — you sleep fine."
+    },
+    {
+      "id": "recover_lost_lead",
+      "original_name": "Harbinger",
+      "display_name": "Recover Lost Lead",
+      "new_name": "Recover Lost Lead",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 3,
+      "rules_text": "+1 Card, +1 Action. Look through your discard pile. You may put a card from it onto your deck.",
+      "flavor": "Dig back into the CRM. That client who ghosted you in Q1? They just opened your email."
+    },
+    {
+      "id": "sales_rep",
+      "original_name": "Merchant",
+      "display_name": "Sales Rep",
+      "new_name": "Sales Rep",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 3,
+      "rules_text": "+1 Card, +1 Action. The first time you play a Silver this turn, +$1.",
+      "flavor": "A closer who squeezes extra margin out of every commercial contract you have on the books."
+    },
+    {
+      "id": "junior_pilot",
+      "original_name": "Vassal",
+      "display_name": "Junior Pilot",
+      "new_name": "Junior Pilot",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 3,
+      "rules_text": "+$2. Discard the top card of your deck. If it's an Action card, you may play it.",
+      "flavor": "Pays for themselves, and sometimes picks the next task off your stack and just handles it."
+    },
+    {
+      "id": "co_working_space",
+      "original_name": "Village",
+      "display_name": "Co-Working Space",
+      "new_name": "Co-Working Space",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 3,
+      "rules_text": "+1 Card, +2 Actions.",
+      "flavor": "Hot desks, fast wifi, three other startups in the same room. Things move in parallel here."
+    },
+    {
+      "id": "quick_gig_booking",
+      "original_name": "Workshop",
+      "display_name": "Quick Gig Booking",
+      "new_name": "Quick Gig Booking",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 3,
+      "rules_text": "Gain a card costing up to $4.",
+      "flavor": "Get on the phone, lock something in by Friday. Doesn't have to be glamorous — it just has to ship."
+    },
+    {
+      "id": "permit_office",
+      "original_name": "Bureaucrat",
+      "display_name": "Permit Office",
+      "new_name": "Permit Office",
+      "types": [
+        "Action",
+        "Attack"
+      ],
+      "type": [
+        "Action",
+        "Attack"
+      ],
+      "cost": 4,
+      "rules_text": "Gain a Silver onto your deck. Each other player reveals a Victory card from their hand and puts it onto their deck (or reveals a hand with no Victory cards).",
+      "flavor": "You navigate the paperwork and land a contract. Your competitors get tangled in compliance and lose a week to red tape."
+    },
+    {
+      "id": "portfolio_diversity",
+      "original_name": "Gardens",
+      "display_name": "Portfolio Diversity",
+      "new_name": "Portfolio Diversity",
+      "types": [
+        "Victory"
+      ],
+      "type": [
+        "Victory"
+      ],
+      "cost": 4,
+      "rules_text": "Worth 1 VP per 10 cards you have (round down).",
+      "flavor": "A sprawling, varied client portfolio. Investors love a story that says \"we serve every vertical.\"",
+      "pile_count": {
+        "2": 8,
+        "3": 12,
+        "4": 12,
+        "5": 12,
+        "6": 12
+      }
+    },
+    {
+      "id": "price_war",
+      "original_name": "Militia",
+      "display_name": "Price War",
+      "new_name": "Price War",
+      "types": [
+        "Action",
+        "Attack"
+      ],
+      "type": [
+        "Action",
+        "Attack"
+      ],
+      "cost": 4,
+      "rules_text": "+$2. Each other player discards down to 3 cards in hand.",
+      "flavor": "You undercut the market. Rivals scramble — they have to drop options to keep up."
+    },
+    {
+      "id": "refinance_old_gear",
+      "original_name": "Moneylender",
+      "display_name": "Refinance Old Gear",
+      "new_name": "Refinance Old Gear",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 4,
+      "rules_text": "You may trash a Copper from your hand for +$3.",
+      "flavor": "Sell that beat-up DJI Mini on Craigslist. The cash hits today; you'll never have to fly that thing again."
+    },
+    {
+      "id": "headhunt_talent",
+      "original_name": "Poacher",
+      "display_name": "Headhunt Talent",
+      "new_name": "Headhunt Talent",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 4,
+      "rules_text": "+1 Card, +1 Action, +$1. Discard a card per empty Supply pile.",
+      "flavor": "Steal a pilot from a competitor. The hotter the labor market gets, the more it costs you in distractions and severance."
+    },
+    {
+      "id": "equipment_upgrade",
+      "original_name": "Remodel",
+      "display_name": "Equipment Upgrade",
+      "new_name": "Equipment Upgrade",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 4,
+      "rules_text": "Trash a card from your hand. Gain a card costing up to $2 more than it.",
+      "flavor": "Trade in the old workflow for a better one. Sell the Mavic, buy the Inspire. Sell the freelancer, hire the staffer."
+    },
+    {
+      "id": "editing_sprint",
+      "original_name": "Smithy",
+      "display_name": "Editing Sprint",
+      "new_name": "Editing Sprint",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 4,
+      "rules_text": "+3 Cards.",
+      "flavor": "Heads-down weekend in the edit bay. A pile of finished deliverables comes out the other side."
+    },
+    {
+      "id": "repeatable_workflow",
+      "original_name": "Throne Room",
+      "display_name": "Repeatable Workflow",
+      "new_name": "Repeatable Workflow",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 4,
+      "rules_text": "You may play an Action card from your hand twice.",
+      "flavor": "You systematized it. Now it runs twice this week for the same effort it used to take once."
+    },
+    {
+      "id": "hostile_competitor",
+      "original_name": "Bandit",
+      "display_name": "Hostile Competitor",
+      "new_name": "Hostile Competitor",
+      "types": [
+        "Action",
+        "Attack"
+      ],
+      "type": [
+        "Action",
+        "Attack"
+      ],
+      "cost": 5,
+      "rules_text": "Gain a Gold. Each other player reveals the top 2 cards of their deck, trashes a revealed Treasure other than Copper, and discards the rest.",
+      "flavor": "A predatory rival firm wins a premium client AND poaches your competitors' best contracts. Brutal week to be anyone else."
+    },
+    {
+      "id": "industry_conference",
+      "original_name": "Council Room",
+      "display_name": "Industry Conference",
+      "new_name": "Industry Conference",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 5,
+      "rules_text": "+4 Cards, +1 Buy. Each other player draws a card.",
+      "flavor": "You speak on a panel. Huge exposure for your brand. Of course, every competitor in the audience also picks up a useful tip."
+    },
+    {
+      "id": "brand_launch_event",
+      "original_name": "Festival",
+      "display_name": "Brand Launch Event",
+      "new_name": "Brand Launch Event",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 5,
+      "rules_text": "+2 Actions, +1 Buy, +$2.",
+      "flavor": "Rooftop party, drone light show, open bar. Leads, revenue, and momentum all in one night."
+    },
+    {
+      "id": "rd_lab",
+      "original_name": "Laboratory",
+      "display_name": "R&D Lab",
+      "new_name": "R&D Lab",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 5,
+      "rules_text": "+2 Cards, +1 Action.",
+      "flavor": "Experiment with new camera rigs, new edit styles, new automated pipelines. It pays back without slowing you down."
+    },
+    {
+      "id": "content_library",
+      "original_name": "Library",
+      "display_name": "Content Library",
+      "new_name": "Content Library",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 5,
+      "rules_text": "Draw until you have 7 cards in hand, skipping any Action cards you choose to; set those aside, discarding them afterwards.",
+      "flavor": "Your archive of stock footage, b-roll, and reusable assets. Pull from it, but skip past the projects already in motion."
+    },
+    {
+      "id": "lead_gen_platform",
+      "original_name": "Market",
+      "display_name": "Lead Gen Platform",
+      "new_name": "Lead Gen Platform",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 5,
+      "rules_text": "+1 Card, +1 Action, +1 Buy, +$1.",
+      "flavor": "An all-in-one marketing dashboard. Leads, time, money, purchasing power. The everything-bagel of growth tools."
+    },
+    {
+      "id": "client_upsell",
+      "original_name": "Mine",
+      "display_name": "Client Upsell",
+      "new_name": "Client Upsell",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 5,
+      "rules_text": "You may trash a Treasure from your hand. Gain a Treasure to your hand costing up to $3 more than it. Put it into your hand.",
+      "flavor": "Turn a local gig into a commercial contract. Turn a commercial contract into a corporate retainer. The art of moving clients up the ladder."
+    },
+    {
+      "id": "project_manager",
+      "original_name": "Sentry",
+      "display_name": "Project Manager",
+      "new_name": "Project Manager",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 5,
+      "rules_text": "+1 Card, +1 Action. Look at the top 2 cards of your deck. Trash and/or discard any number of them. Put the rest back on top in any order.",
+      "flavor": "A great PM looks at next week, kills the time-wasters, postpones the distractions, and lines up what's left in the right order."
+    },
+    {
+      "id": "smear_campaign",
+      "original_name": "Witch",
+      "display_name": "Smear Campaign",
+      "new_name": "Smear Campaign",
+      "types": [
+        "Action",
+        "Attack"
+      ],
+      "type": [
+        "Action",
+        "Attack"
+      ],
+      "cost": 5,
+      "rules_text": "+2 Cards. Each other player gains a Curse.",
+      "flavor": "Plant the story. Seed the subreddit. Every competitor takes a reputation hit they can't shake before the game ends."
+    },
+    {
+      "id": "bring_on_a_specialist",
+      "original_name": "Artisan",
+      "display_name": "Bring On a Specialist",
+      "new_name": "Bring On a Specialist",
+      "types": [
+        "Action"
+      ],
+      "type": [
+        "Action"
+      ],
+      "cost": 6,
+      "rules_text": "Gain a card to your hand costing up to $5. Put a card from your hand onto your deck.",
+      "flavor": "Hire a senior cinematographer or VFX artist. They show up Monday and immediately reshuffle your priorities."
+    }
+  ],
+  "recommended_first_game_set": {
+    "note": "Equivalent to Dominion's First Game set: Cellar, Market, Merchant, Militia, Mine, Moat, Remodel, Smithy, Village, Workshop.",
+    "cards": [
+      "Triage Inbox",
+      "Lead Gen Platform",
+      "Sales Rep",
+      "Price War",
+      "Client Upsell",
+      "Liability Insurance",
+      "Equipment Upgrade",
+      "Editing Sprint",
+      "Co-Working Space",
+      "Quick Gig Booking"
+    ]
+  },
+  "rules_notes": {
+    "preserve_exact_mechanics": true,
+    "do_not_add_new_actions": true,
+    "do_not_change_costs": true,
+    "do_not_change_card_text": true,
+    "use_original_name_for_engine_lookup": true
+  },
+  "design_notes_for_future_tooling": {
+    "for_claude_code_or_similar": "This JSON file is the canonical spec. Every card preserves the original Dominion rules text verbatim — only names and flavor change. To build a digital prototype, implement the original Dominion game engine and use the 'new_name' or 'display_name' field as the display name, 'flavor' field as hover/tooltip text, and 'rules_text' as the literal card effect. The 'original_name' field is a stable key to map back to any existing Dominion engine implementation.",
+    "extensibility": "If you want to remix cards from Dominion expansions later, add them using the same schema. Keep original_name as the join key to Dominion engines.",
+    "playtesting_advice": "Run a game with the names changed but rules untouched, and verify that strategy patterns still emerge the same way as in base Dominion: the engine-vs-money-vs-attack tension should still be there. If a card feels different to play, you've drifted from the remix and made a redesign.",
+    "art_direction_for_later": "Clean modern startup pitch-deck aesthetic. Card art = isometric drone illustrations, sleek dashboards, rooftop city skylines. Avoid fantasy or medieval imagery."
+  }
+}
+```
+
+<span style="display:none">[^1][^2]</span>
+
+<div align="center">⁂</div>
+
+[^1]: dronedom_app-2.jsx
+
+[^2]: dronedom.json
+
