@@ -5,7 +5,7 @@ import type { ServerMsg, PlayerView, Action, ClientMsg } from '../party/types';
 
 const PARTYKIT_HOST = import.meta.env.DEV
   ? 'localhost:1999'
-  : (import.meta.env.VITE_PARTYKIT_HOST ?? 'dronedom.partykit.dev');
+  : (import.meta.env.VITE_PARTYKIT_HOST ?? 'dronedom.ded1nk.partykit.dev');
 
 export interface LobbyState {
   you: 0 | 1 | null;
