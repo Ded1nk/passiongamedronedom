@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/party': {
+      '/parties': {
         target: 'http://localhost:1999',
         ws: true,
         changeOrigin: true,

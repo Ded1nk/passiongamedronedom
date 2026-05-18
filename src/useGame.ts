@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import { useEffect, useState, useCallback } from 'react';
 import PartySocket from 'partysocket';
-import type { ServerMsg, PlayerView, Action, ClientMsg } from '../party/types';
+import type { ServerMsg, PlayerView, Action, ClientMsg, LobbyPlayer } from '../party/types';
 
 const PARTYKIT_HOST = import.meta.env.DEV
   ? 'localhost:1999'
@@ -9,13 +9,26 @@ const PARTYKIT_HOST = import.meta.env.DEV
 
 export interface LobbyState {
   you: 0 | 1 | null;
-  opponentJoined: boolean;
+  players: [LobbyPlayer, LobbyPlayer] | null;
+}
+
+export interface GameOverState {
+  scores: [number, number];
+  winner: 0 | 1 | 'tie';
+  rematch: [boolean, boolean];
+}
+
+export interface ForfeitState {
+  winner: 0 | 1;
+  reason: string;
 }
 
 export function useGame(roomId: string, playerName: string) {
   const [view, setView] = useState<PlayerView | null>(null);
   const [log, setLog] = useState<string[]>([]);
-  const [lobby, setLobby] = useState<LobbyState>({ you: null, opponentJoined: false });
+  const [lobby, setLobby] = useState<LobbyState>({ you: null, players: null });
+  const [gameOver, setGameOver] = useState<GameOverState | null>(null);
+  const [forfeit, setForfeit] = useState<ForfeitState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [socket, setSocket] = useState<PartySocket | null>(null);
 
@@ -27,7 +40,10 @@ export function useGame(roomId: string, playerName: string) {
 
       switch (msg.type) {
         case 'lobby':
-          setLobby({ you: msg.you, opponentJoined: msg.opponentJoined });
+          setLobby({ you: msg.you, players: msg.players });
+          setView(null);
+          setGameOver(null);
+          setForfeit(null);
           ws.send(JSON.stringify({ type: 'join', name: playerName } as ClientMsg));
           break;
         case 'state':
@@ -39,7 +55,10 @@ export function useGame(roomId: string, playerName: string) {
           setError(msg.reason);
           break;
         case 'gameOver':
-          // gameOver state is already in view.gameOver; scores come here if needed
+          setGameOver({ scores: msg.scores, winner: msg.winner, rematch: msg.rematch });
+          break;
+        case 'forfeit':
+          setForfeit({ winner: msg.winner, reason: msg.reason });
           break;
       }
     });
@@ -53,5 +72,15 @@ export function useGame(roomId: string, playerName: string) {
     socket.send(JSON.stringify({ type: 'action', action } as ClientMsg));
   }, [socket]);
 
-  return { view, log, lobby, error, sendAction };
+  const sendReady = useCallback(() => {
+    if (!socket) return;
+    socket.send(JSON.stringify({ type: 'ready' } as ClientMsg));
+  }, [socket]);
+
+  const sendRematch = useCallback(() => {
+    if (!socket) return;
+    socket.send(JSON.stringify({ type: 'rematch' } as ClientMsg));
+  }, [socket]);
+
+  return { view, log, lobby, gameOver, forfeit, error, sendAction, sendReady, sendRematch };
 }

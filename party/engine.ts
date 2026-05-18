@@ -73,7 +73,7 @@ function addLog(state: GameState, msg: string): void {
 export function initialState(p0name: string, p1name: string): GameState {
   return {
     supply: initialSupply(),
-    players: [makePlayer(p0name, false), makePlayer(p1name, true)],
+    players: [makePlayer(p0name, false), makePlayer(p1name, false)],
     currentPlayer: 0,
     phase: 'action',
     trash: [],

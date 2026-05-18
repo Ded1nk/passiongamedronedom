@@ -87,13 +87,22 @@ export type Action =
   | { kind: 'advancePhase' }
   | { kind: 'promptResponse'; choice: PromptChoice };
 
+export interface LobbyPlayer {
+  name: string;
+  connected: boolean;
+  ready: boolean;
+}
+
 export type ClientMsg =
   | { type: 'join'; name: string }
+  | { type: 'ready' }
+  | { type: 'rematch' }
   | { type: 'action'; action: Action }
   | { type: 'ping' };
 
 export type ServerMsg =
-  | { type: 'lobby'; you: 0 | 1; opponentJoined: boolean }
+  | { type: 'lobby'; you: 0 | 1; players: [LobbyPlayer, LobbyPlayer] }
   | { type: 'state'; view: PlayerView; log: string[] }
   | { type: 'error'; reason: string }
-  | { type: 'gameOver'; scores: [number, number]; winner: 0 | 1 | 'tie' };
+  | { type: 'gameOver'; scores: [number, number]; winner: 0 | 1 | 'tie'; rematch: [boolean, boolean] }
+  | { type: 'forfeit'; winner: 0 | 1; reason: string };
