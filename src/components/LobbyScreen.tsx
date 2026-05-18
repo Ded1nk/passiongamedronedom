@@ -3,9 +3,10 @@ import type { LobbyState } from '../useGame';
 interface Props {
   lobby: LobbyState;
   onReady: () => void;
+  onPlayBot: () => void;
 }
 
-export function LobbyScreen({ lobby, onReady }: Props) {
+export function LobbyScreen({ lobby, onReady, onPlayBot }: Props) {
   const { you, players } = lobby;
   const mySlot = you ?? 0;
   const me = players?.[mySlot];
@@ -73,24 +74,47 @@ export function LobbyScreen({ lobby, onReady }: Props) {
 
         {/* Ready button */}
         {you !== null && (
-          <button
-            onClick={onReady}
-            disabled={iAmReady || !opponentConnected}
-            style={{
-              width: '100%',
-              fontFamily: '"Space Mono", monospace',
-              fontSize: 12, letterSpacing: 2, fontWeight: 700, textTransform: 'uppercase',
-              padding: '14px',
-              background: iAmReady ? '#1f2638' : opponentConnected ? '#5b8def' : '#1f2638',
-              color: iAmReady ? '#5fb878' : opponentConnected ? '#0a0c12' : '#4a5168',
-              border: iAmReady ? '1px solid #5fb87844' : 'none',
-              borderRadius: 6,
-              cursor: iAmReady || !opponentConnected ? 'not-allowed' : 'pointer',
-              transition: 'all 0.15s',
-            }}
-          >
-            {iAmReady ? '✓ Ready — waiting for opponent' : opponentConnected ? 'Ready up' : 'Waiting for opponent…'}
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <button
+              onClick={onReady}
+              disabled={iAmReady || !opponentConnected}
+              style={{
+                width: '100%',
+                fontFamily: '"Space Mono", monospace',
+                fontSize: 12, letterSpacing: 2, fontWeight: 700, textTransform: 'uppercase',
+                padding: '14px',
+                background: iAmReady ? '#1f2638' : opponentConnected ? '#5b8def' : '#1f2638',
+                color: iAmReady ? '#5fb878' : opponentConnected ? '#0a0c12' : '#4a5168',
+                border: iAmReady ? '1px solid #5fb87844' : 'none',
+                borderRadius: 6,
+                cursor: iAmReady || !opponentConnected ? 'not-allowed' : 'pointer',
+                transition: 'all 0.15s',
+              }}
+            >
+              {iAmReady ? '✓ Ready — waiting for opponent' : opponentConnected ? 'Ready up' : 'Waiting for opponent…'}
+            </button>
+
+            {/* Play vs Bot — only show while waiting for opponent */}
+            {!opponentConnected && !iAmReady && (
+              <button
+                onClick={onPlayBot}
+                style={{
+                  width: '100%',
+                  fontFamily: '"Space Mono", monospace',
+                  fontSize: 11, letterSpacing: 2, fontWeight: 700, textTransform: 'uppercase',
+                  padding: '12px',
+                  background: 'transparent',
+                  color: '#8a92a8',
+                  border: '1px solid #2a3142',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                Play vs Bot
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>

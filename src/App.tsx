@@ -7,7 +7,7 @@ const ROOM_ID = 'dronedom-main';
 const PLAYER_NAME = 'You';
 
 export default function App() {
-  const { view, log, lobby, gameOver, forfeit, sendAction, sendReady, sendRematch } = useGame(ROOM_ID, PLAYER_NAME);
+  const { view, log, lobby, gameOver, forfeit, sendAction, sendReady, sendRematch, sendPlayBot } = useGame(ROOM_ID, PLAYER_NAME);
 
   if (forfeit) {
     return <EndScreen type="forfeit" forfeit={forfeit} lobby={lobby} onRematch={sendRematch} />;
@@ -18,7 +18,7 @@ export default function App() {
   }
 
   if (!view) {
-    return <LobbyScreen lobby={lobby} onReady={sendReady} />;
+    return <LobbyScreen lobby={lobby} onReady={sendReady} onPlayBot={sendPlayBot} />;
   }
 
   return <GameBoard view={view} log={log} onAction={sendAction} />;

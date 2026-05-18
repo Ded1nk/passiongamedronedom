@@ -82,5 +82,10 @@ export function useGame(roomId: string, playerName: string) {
     socket.send(JSON.stringify({ type: 'rematch' } as ClientMsg));
   }, [socket]);
 
-  return { view, log, lobby, gameOver, forfeit, error, sendAction, sendReady, sendRematch };
+  const sendPlayBot = useCallback(() => {
+    if (!socket) return;
+    socket.send(JSON.stringify({ type: 'playBot' } as ClientMsg));
+  }, [socket]);
+
+  return { view, log, lobby, gameOver, forfeit, error, sendAction, sendReady, sendRematch, sendPlayBot };
 }

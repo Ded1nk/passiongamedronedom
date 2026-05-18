@@ -96,6 +96,7 @@ export interface LobbyPlayer {
 export type ClientMsg =
   | { type: 'join'; name: string }
   | { type: 'ready' }
+  | { type: 'playBot' }
   | { type: 'rematch' }
   | { type: 'action'; action: Action }
   | { type: 'ping' };

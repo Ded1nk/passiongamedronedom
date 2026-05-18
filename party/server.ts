@@ -1,5 +1,5 @@
 import type * as Party from 'partykit/server';
-import { initialState, isLegal, applyAction, tallyVP } from './engine';
+import { initialState, isLegal, applyAction, botTurn, tallyVP } from './engine';
 import { redactFor } from './redact';
 import type { ClientMsg, ServerMsg, GameState, LobbyPlayer } from './types';
 
@@ -12,6 +12,7 @@ export default class DroneDomServer implements Party.Server {
   ready: [boolean, boolean] = [false, false];
   rematch: [boolean, boolean] = [false, false];
   forfeitTimers: [number | null, number | null] = [null, null];
+  isBotGame = false;
 
   constructor(readonly room: Party.Room) {}
 
@@ -65,6 +66,7 @@ export default class DroneDomServer implements Party.Server {
     this.state = null;
     this.ready = [false, false];
     this.rematch = [false, false];
+    this.isBotGame = false;
     this.clearForfeitTimer(0);
     this.clearForfeitTimer(1);
     this.broadcastLobby();
@@ -140,6 +142,16 @@ export default class DroneDomServer implements Party.Server {
       return;
     }
 
+    if (msg.type === 'playBot') {
+      if (this.state || slot !== 0) return; // only player 0, only before game starts
+      this.isBotGame = true;
+      this.names[1] = 'RivalCo Bot';
+      this.state = initialState(this.names[0], 'RivalCo Bot');
+      this.state.players[1].isBot = true;
+      this.broadcastState();
+      return;
+    }
+
     if (msg.type === 'rematch') {
       if (!this.state?.gameOver) return;
       this.rematch[slot] = true;
@@ -155,6 +167,9 @@ export default class DroneDomServer implements Party.Server {
       if (!this.state) { sender.send(JSON.stringify({ type: 'error', reason: 'game not started' } as ServerMsg)); return; }
       if (!isLegal(this.state, slot, msg.action)) { sender.send(JSON.stringify({ type: 'error', reason: 'illegal action' } as ServerMsg)); return; }
       this.state = applyAction(this.state, slot, msg.action);
+      if (this.isBotGame && !this.state.gameOver && this.state.currentPlayer === 1) {
+        this.state = botTurn(this.state);
+      }
       this.broadcastState();
     }
   }
